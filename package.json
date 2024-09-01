@@ -16,7 +16,8 @@
     "firebase": "^10.13.0",
     "firebase-admin": "^12.4.0",
     "mongodb": "^6.8.0",
-    "mongoose": "^8.5.3"
+    "mongoose": "^8.5.3",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",
