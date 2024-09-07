@@ -1,9 +1,11 @@
+const { readdirSync } = require("fs");
+const path = require("path");
+
 const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { readdirSync } = require("fs");
 require("dotenv").config();
 
 // Create Express app
@@ -16,9 +18,7 @@ app.use(cors());
 
 // Connect to MongoDB Atlas
 mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-  })
+  .connect(process.env.MONGODB_URI, {})
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((error) => console.error("Error connecting to MongoDB:", error));
 
@@ -27,8 +27,12 @@ mongoose.connection.on("error", (err) => {
 });
 
 // Setup routes
-readdirSync("./src/routes").map((routeFile) =>
-  app.use("/api", require(`.src/routes/${routeFile}`))
+
+const routesPath = path.resolve(__dirname, "routes");
+console.log("routesPath", routesPath);
+
+readdirSync("./routes").map((routePath) =>
+  app.use("/api", require("./routes/" + routePath))
 );
 
 module.exports = app;
