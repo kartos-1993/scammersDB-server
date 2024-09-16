@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { readdirSync } = require("fs");
+const { readdir } = require("fs").promises;
 require("dotenv").config();
 const passport = require("passport");
 const Strategy = require("passport-facebook").Strategy;
@@ -17,7 +18,7 @@ app.use(morgan("dev"));
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.SERVER_URL_PRE_POD,
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
@@ -37,7 +38,7 @@ passport.use(
     {
       clientID: process.env.FB_APP_ID,
       clientSecret: process.env.FB_KEY,
-      callbackURL: "http://localhost:3001/auth/facebook/callback",
+      callbackURL: `${process.env.SERVER_URL_PRE_POD}/auth/facebook/callback`,
     },
     function (accessToken, refreshToken, profile, cb) {
       return cb(null, profile);
@@ -46,6 +47,9 @@ passport.use(
 );
 
 // Ensure routes are properly set up
+// async () => {
+//   const routeFiles = await readdir;
+// };
 readdirSync("./routes").map((routeFile) =>
   app.use("/api", require(`./routes/${routeFile}`))
 );
